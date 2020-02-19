@@ -1,7 +1,7 @@
 # Medidor de Livre Arbitrio
 
 Já pensou se é realmente livre ou se suas ações são pré-determinadas, previsíveis?
-Meça seu livre arbítrio. 
+Meça seu livre arbítrio. Inspiração: preditor de Scott Aaronson.
 
 Grupo aMuDi
 
