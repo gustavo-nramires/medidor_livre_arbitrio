@@ -1,5 +1,7 @@
 # Medidor de Livre Arbitrio (WIP)
 
+Seria a liberdade o princípio mais importante a ser preservado? Você é livre?
+
 Grupo aMuDi
 
 ## Codigo
