@@ -50,6 +50,13 @@ void setup() {
   }
   pinMode(pinoVoltimetro, OUTPUT);
 
+  //Inicializa botoes
+  for ( int i = 0; i < N_BOTOES; i++ ) {
+    botoes[i].n = i;
+    botoes[i].estado = 0;
+    botoes[i].atraso = 0;
+  }
+
   //Inicializa estatisticas
   for ( int i = 0; i < N_ESTATISTICAS; i++ ) {
     estatisticas[i] = 0;
