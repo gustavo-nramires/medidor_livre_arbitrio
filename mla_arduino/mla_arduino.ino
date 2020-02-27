@@ -2,8 +2,8 @@
 #define N_ESTATISTICAS (1<<N_HISTORICO)
 #define N_BOTOES 2
 
-#define PERIODO_ATUALIZACAO 50
-#define ATRASO_BOUNCE 150 / PERIODO_ATUALIZACAO
+#define PERIODO_ATUALIZACAO 25
+#define ATRASO_BOUNCE 100 / PERIODO_ATUALIZACAO
 
 #define intervalo_treinamento 8
 
@@ -13,7 +13,7 @@ int acertos = 0;
 int n_escolhas = 0;
 float taxa_acertos = 0.5;
 
-const int DEBUG = 1;
+const int DEBUG = 0;
 
 struct botao {
     int n;
@@ -44,6 +44,8 @@ float f_livre_arbitrio();
 
 void setup() {
   Serial.begin(9600);
+
+  randomSeed(analogRead(0));
 
   for( int i = 0; i < N_BOTOES; i++ ) {
     pinMode(pinoBotao[i], INPUT);
@@ -86,7 +88,7 @@ void loop() {
       escolha = 1;
     }
 
-    DEBUG_PRINT("Escolha: %d",  escolha);
+    DEBUG_PRINT("Escolha: %d\n",  escolha);
 
     n_escolhas++;
 
@@ -127,7 +129,7 @@ void loop() {
     //
     if ( escolha == previsao ) {
       acertos++;
-      taxa_acertos = acertos / n_escolhas;
+      taxa_acertos = (float) acertos / n_escolhas;
     }
 
     // Acomodacao da nova decisao no historico
@@ -148,7 +150,10 @@ void loop() {
 
     atualiza_displays();
 
-    DEBUG_PRINT("Previsibilidade: %f", taxa_acertos);
+    int prev_int = (int) 100 * taxa_acertos;
+    DEBUG_PRINT("Previsibilidade: %d\n", prev_int);
+    int la_int = (int) 255* f_livre_arbitrio() ;
+    DEBUG_PRINT("Previsibilidade: %d\n", la_int);
   }
 }
 
@@ -156,7 +161,7 @@ void loop() {
 void atualiza_botoes () {
   for( int i = 0; i < N_BOTOES; i++ ) {
     atualiza_botao(&botoes[i]);
-    DEBUG_PRINT("Estado botao %d: %d\n",  i, botoes[i].estado);
+    //DEBUG_PRINT("Estado botao %d: %d\n",  i, botoes[i].estado);
   }
 }
 
@@ -195,9 +200,11 @@ void atualiza_displays () {
   // Display atual: Voltimetro (0-5V)
   // TODO: movimentar agulha de acordo com variancia
 
-  float saida = f_livre_arbitrio();
-  int saida_analogica = (int) saida * 255;
+  float saida = 255 * f_livre_arbitrio();
+  int saida_analogica = (int) saida;
 
+  analogWrite(pinoVoltimetro, 0);
+  delay(10);
   analogWrite(pinoVoltimetro, saida);
 
 }
@@ -209,7 +216,7 @@ float f_livre_arbitrio() {
     livre_arbitrio = 1;
   }
   else {
-    livre_arbitrio = pow((1-2*(taxa_acertos-0.5)),3);
+    livre_arbitrio = (float) pow((1-2*(taxa_acertos-0.5)),3);
   }
   return livre_arbitrio;
 }
